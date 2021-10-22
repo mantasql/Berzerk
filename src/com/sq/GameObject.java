@@ -1,41 +1,85 @@
 package com.sq;
 
-import javafx.geometry.Rectangle2D;
+public abstract class GameObject {
+    private float xCoordinate;
+    private float yCoordinate;
+    private int objectWidth;
+    private int objectHeight;
+    private Sprite[] sprites;
+    private boolean isActive;
+    private GameObjectManager gameObjectManager;
+    private String tag;
 
-public class GameObject {
-    protected int xCoordinate;
-    protected int yCoordinate;
-    protected int objectWidth;
-    protected int objectHeight;
-    protected boolean isSolid;
-    protected boolean isDynamic;
-    protected Sprite[] sprites;
-    protected Rectangle2D collider;
-
-    public GameObject(int xCoordinate,int yCoordinate, int objectWidth, int objectHeight, boolean isSolid, boolean isDynamic) {
+    public GameObject(float xCoordinate,float yCoordinate, int objectWidth, int objectHeight,String tag, GameObjectManager gameObjectManager) {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
         this.objectWidth = objectWidth;
         this.objectHeight = objectHeight;
-        this.isSolid = isSolid;
-        this.isDynamic = isDynamic;
-    }
+        this.tag = tag;
+        isActive = true;
+        this.gameObjectManager = gameObjectManager;
+    };
 
-    public int getX() {
+    public GameObject(){}
+
+    public float getXCoordinate() {
         return xCoordinate;
     }
 
-    public int getY() {
+    public void setXCoordinate(float xCoordinate) {
+        this.xCoordinate = xCoordinate;
+    }
+
+    public float getYCoordinate() {
         return yCoordinate;
     }
 
-    protected void setupObjectSprites(){}
-
-    protected void onCollision(){
-
+    public void setYCoordinate(float yCoordinate) {
+        this.yCoordinate = yCoordinate;
     }
 
     public Sprite[] getSprites() {
         return sprites;
+    }
+
+    public void setSprites(Sprite[] sprites) {
+        this.sprites = sprites;
+    }
+
+    public void setPosition(float xCoordinate, float yCoordinate) {
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
+    }
+
+    public int getObjectWidth() {
+        return objectWidth;
+    }
+
+    public void setObjectWidth(int objectWidth) {
+        this.objectWidth = objectWidth;
+    }
+
+    public int getObjectHeight() {
+        return objectHeight;
+    }
+
+    public void setObjectHeight(int objectHeight) {
+        this.objectHeight = objectHeight;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public GameObjectManager getGameObjectManager() {
+        return gameObjectManager;
+    }
+
+    public String getTag() {
+        return tag;
     }
 }
