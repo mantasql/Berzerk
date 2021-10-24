@@ -10,20 +10,19 @@ public class Bullet extends GameObject implements IDestroyable {
     private int speed = 3;
     private Direction travelDirection;
     private BulletController bulletController;
-    private Rectangle2D colliderBox;
     private GameObject parentGameObject;
 
     public Bullet(float xCoordinate, float yCoordinate, Direction direction, GameObjectManager gameObjectManager,GameObject parentGameObject) {
         super(xCoordinate, yCoordinate, 5*scaling, scaling, parentGameObject.getTag(), gameObjectManager);
         this.parentGameObject = parentGameObject;
         if(parentGameObject.getTag().equals("Player")){
-            gameObjectManager.getPlayerBullets().add(this);
+            gameObjectManager.addPlayerBullets(this);
         } else {
-            gameObjectManager.getEnemyBullets().add(this);
+            gameObjectManager.addEnemyBullets(this);
         }
 
         this.travelDirection = direction;
-        this.colliderBox = new Rectangle2D(xCoordinate,yCoordinate,5*scaling,5*scaling);
+        this.setBoxCollider(new Rectangle2D(xCoordinate,yCoordinate,5*scaling,5*scaling));
         setObjectSprites();
         bulletController = new BulletController(this);
     }
@@ -43,22 +42,22 @@ public class Bullet extends GameObject implements IDestroyable {
         return travelDirection;
     }
 
-    public Rectangle2D getColliderBox() {
-        return colliderBox;
-    }
-
-    public void setColliderBox(Rectangle2D colliderBox) {
-        this.colliderBox = colliderBox;
-    }
-
     @Override
     public void destroy() {
         this.setActive(false);
-        bulletController.getTimeline().stop();
+        bulletController.stop();
         if(parentGameObject.getTag().equals("Player")){
-            getGameObjectManager().getPlayerBullets().remove(this);
+            getGameObjectManager().removePlayerBullets(this);
         }else{
-            getGameObjectManager().getEnemyBullets().remove(this);
+            getGameObjectManager().removeEnemyBullets(this);
         }
+    }
+
+    public GameObject getParentGameObject() {
+        return parentGameObject;
+    }
+
+    public BulletController getBulletController() {
+        return bulletController;
     }
 }

@@ -1,10 +1,7 @@
 package com.sq;
 
-import GameObjects.Player;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.paint.Color;
-
-import static com.sq.DisplayManager.scaling;
+import javafx.application.Platform;
+import javafx.scene.input.KeyCode;
 
 public class GameManager {
 
@@ -12,47 +9,60 @@ public class GameManager {
     private RoomGenerator roomGenerator;
     private GameObjectManager gameObjectManager;
 
-    private static GameManager instance;
-
-    private GameManager() {
-        gameObjectManager = new GameObjectManager(null);
+    public GameManager() {
+        gameObjectManager = new GameObjectManager();
         roomGenerator = new RoomGenerator(gameObjectManager);
     }
 
-    public static GameManager getInstance() {
-        if(instance == null) {
-            instance = new GameManager();
+    public void runGame(){
+        checkGameCondition();
+        if(gameOver){
+            waitToResumeOrQuit();
         }
-        return instance;
+        gameObjectManager.managePlayerCollisions();
+        gameObjectManager.manageEnemyCollisions();
+        gameObjectManager.manageBulletCollisions();
+        generateNewRoom();
     }
 
-    public void startGame(){
-        roomGenerator.fillBackground(Color.BLACK);
-        roomGenerator.drawBoarders();
-        if(gameObjectManager.didPlayerCollide()){
-            onPlayerCollision();
+    private void generateNewRoom() {
+        Direction pathwayDirection = gameObjectManager.returnPathwayDirectionIfCollided();
+        if(pathwayDirection != null){
+            roomGenerator.generateNextLevel(pathwayDirection);
         }
-        gameObjectManager.destroyEnemyOnCollision();
-        gameObjectManager.destroyBulletOnCollision();
     }
 
-    private void onPlayerCollision() {
-        int playerHealth = gameObjectManager.getPlayer().getHealth() - 1;
-        Player player = gameObjectManager.getPlayer();
-        if(playerHealth > 0) {
-            gameObjectManager.getPlayer().setHealth(playerHealth);
-            gameObjectManager.getPlayer().setPosition(65*scaling,83*scaling);
-            player.setColliderBox(new Rectangle2D(player.getXCoordinate(), player.getYCoordinate(), player.getObjectWidth(), player.getObjectHeight()));
-        } else {
-            gameObjectManager.getPlayer().setActive(false);
-            gameObjectManager.setPlayer(null);
+    public GameObjectManager getGameObjectManager() {
+        return gameObjectManager;
+    }
+
+    private void checkGameCondition(){
+        if(gameObjectManager.getPlayer() == null){
             gameOver = true;
         }
-        System.out.println(playerHealth);
     }
 
-    private void onBulletCollision() {
-        //gameObjectManager.getPlayerBullets().get()
+    public boolean isGameOver() {
+        return gameOver;
     }
 
+    private void restart(){
+        gameOver = false;
+        gameObjectManager = new GameObjectManager();
+        roomGenerator = new RoomGenerator(gameObjectManager);
+    }
+
+    private void waitToResumeOrQuit(){
+        DisplayManager.mainScene.setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.ENTER) {
+                restart();
+            } else if (event.getCode() == KeyCode.Q){
+                quit();
+            }
+        });
+    }
+
+    private void quit(){
+        Platform.exit();
+    }
 }

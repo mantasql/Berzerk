@@ -1,19 +1,18 @@
 package com.sq;
 
-import GameObjects.Pillar;
-import GameObjects.Player;
-import GameObjects.Robot;
-import GameObjects.Wall;
-import javafx.scene.paint.Color;
+import GameObjects.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static com.sq.DisplayManager.scaling;
 
 public class RoomGenerator {
-    private ArrayList<Wall> mazeMiddlePoints;
+    //private ArrayList<Wall> mazeMiddlePoints;
     private ArrayList<Wall> boarders;
-    private ArrayList<Wall> walls;
+    //private ArrayList<Wall> walls;
+    private ArrayList<Pathway> pathways;
+    private PointObject[] robotSpawnLocations;
     private Cell[][] cells;
     private int wallThickness = 4*scaling;
     private GameObjectManager gameObjectManager;
@@ -21,22 +20,31 @@ public class RoomGenerator {
     public RoomGenerator(GameObjectManager gameObjectManager) {
         cells = new Cell[5][3];
         boarders = new ArrayList<Wall>();
-        mazeMiddlePoints = new ArrayList<Wall>();
-        walls = new ArrayList<Wall>();
+        //mazeMiddlePoints = new ArrayList<Wall>();
+        //walls = new ArrayList<Wall>();
+        pathways = new ArrayList<Pathway>();
+        robotSpawnLocations = new PointObject[11];
         this.gameObjectManager = gameObjectManager;
+        firstTimeSetup();
+    }
+
+    private void firstTimeSetup(){
+        setupRobotSpawnLocations();
         generateBoarders();
+        generatePathways();
         placePlayerObject();
+        spawnRobotsAtRandomPositions();
     }
 
     private void generateBoarders() {
-        Wall wallUpperLeft0 = new Wall(new Pillar(4*scaling,0),new Pillar(104*scaling,0),wallThickness,gameObjectManager);
-        Wall wallUpperLeft1 = new Wall(new Pillar(4*scaling,0),new Pillar(4*scaling,72*scaling),wallThickness,gameObjectManager);
-        Wall wallUpperRight0 = new Wall(new Pillar(151*scaling,0),new Pillar(248*scaling,0),wallThickness,gameObjectManager);
-        Wall wallUpperRight1 = new Wall(new Pillar(248*scaling,0),new Pillar(248*scaling,72*scaling),wallThickness,gameObjectManager);
-        Wall wallBottomLeft0 = new Wall(new Pillar(4*scaling,132*scaling),new Pillar(4*scaling,204*scaling),wallThickness,gameObjectManager);
-        Wall wallBottomLeft1 = new Wall(new Pillar(4*scaling,204*scaling),new Pillar(104*scaling,204*scaling),wallThickness,gameObjectManager);
-        Wall wallBottomRight0 = new Wall(new Pillar(151*scaling,204*scaling),new Pillar(252*scaling,204*scaling),wallThickness,gameObjectManager);
-        Wall wallBottomRight1 = new Wall(new Pillar(248*scaling,135*scaling),new Pillar(248*scaling,208*scaling),wallThickness,gameObjectManager);
+        Wall wallUpperLeft0 = new Wall(new PointObject(4*scaling,0),new PointObject(104*scaling,0),wallThickness,gameObjectManager);
+        Wall wallUpperLeft1 = new Wall(new PointObject(4*scaling,0),new PointObject(4*scaling,72*scaling),wallThickness,gameObjectManager);
+        Wall wallUpperRight0 = new Wall(new PointObject(151*scaling,0),new PointObject(248*scaling,0),wallThickness,gameObjectManager);
+        Wall wallUpperRight1 = new Wall(new PointObject(248*scaling,0),new PointObject(248*scaling,72*scaling),wallThickness,gameObjectManager);
+        Wall wallBottomLeft0 = new Wall(new PointObject(4*scaling,135*scaling),new PointObject(4*scaling,207*scaling),wallThickness,gameObjectManager);
+        Wall wallBottomLeft1 = new Wall(new PointObject(4*scaling,204*scaling),new PointObject(104*scaling,204*scaling),wallThickness,gameObjectManager);
+        Wall wallBottomRight0 = new Wall(new PointObject(151*scaling,204*scaling),new PointObject(252*scaling,204*scaling),wallThickness,gameObjectManager);
+        Wall wallBottomRight1 = new Wall(new PointObject(248*scaling,135*scaling),new PointObject(248*scaling,208*scaling),wallThickness,gameObjectManager);
 
         boarders.add(wallUpperLeft0);
         boarders.add(wallUpperLeft1);
@@ -48,33 +56,53 @@ public class RoomGenerator {
         boarders.add(wallBottomRight1);
     }
 
+    private void generatePathways() {
+        Pathway pathway0 = new Pathway(Direction.UP,new PointObject(104*scaling,0),new PointObject(151*scaling,3*scaling),wallThickness,gameObjectManager);
+        Pathway pathway1 = new Pathway(Direction.RIGHT,new PointObject(248*scaling,72*scaling),new PointObject(251*scaling,135*scaling),wallThickness,gameObjectManager);
+        Pathway pathway2 = new Pathway(Direction.DOWN,new PointObject(104*scaling,204*scaling),new PointObject(151*scaling,207*scaling),wallThickness,gameObjectManager);
+        Pathway pathway3 = new Pathway(Direction.LEFT,new PointObject(4*scaling,72*scaling),new PointObject(7*scaling,135*scaling),wallThickness,gameObjectManager);
+
+        pathways.add(pathway0);
+        pathways.add(pathway1);
+        pathways.add(pathway2);
+        pathways.add(pathway3);
+    }
+
     private void placePlayerObject(){
         new Player(gameObjectManager);
-
-        new Robot(12*scaling,12*scaling, gameObjectManager.getPlayer(), gameObjectManager);
-        new Robot(64*scaling,12*scaling, gameObjectManager.getPlayer(), gameObjectManager);
-        new Robot(160*scaling,12*scaling, gameObjectManager.getPlayer(), gameObjectManager);
-        new Robot(206*scaling,12*scaling, gameObjectManager.getPlayer(), gameObjectManager);
-        //new Robot(64*scaling,80*scaling, gameObjectManager.getPlayer(), gameObjectManager);
-        //new Robot(112*scaling,80*scaling, gameObjectManager.getPlayer(), gameObjectManager);
-        //new Robot(158*scaling,80*scaling, gameObjectManager.getPlayer(), gameObjectManager);
-        //new Robot(12*scaling,150*scaling, gameObjectManager.getPlayer(), gameObjectManager);
-        //new Robot(64*scaling,150*scaling, gameObjectManager.getPlayer(), gameObjectManager);
-        //new Robot(160*scaling,150*scaling, gameObjectManager.getPlayer(), gameObjectManager);
-        //new Robot(206*scaling,150*scaling, gameObjectManager.getPlayer(), gameObjectManager);
     }
 
-    private void generateMazeMiddlePoints() {
+    private void setupRobotSpawnLocations(){
+        //randomize how many robots spawn at a time and their spawn position.
+        //PointObject[] robotSpawnLocations = new PointObject[11];
+        robotSpawnLocations[0] = new PointObject(12*scaling,12*scaling);
+        robotSpawnLocations[1] = new PointObject(64*scaling,12*scaling);
+        robotSpawnLocations[2] = new PointObject(160*scaling,12*scaling);
+        robotSpawnLocations[3] = new PointObject(206*scaling,12*scaling);
+        robotSpawnLocations[4] = new PointObject(64*scaling,80*scaling);
+        robotSpawnLocations[5] = new PointObject(112*scaling,80*scaling);
+        robotSpawnLocations[6] = new PointObject(158*scaling,80*scaling);
+        robotSpawnLocations[7] = new PointObject(12*scaling,150*scaling);
+        robotSpawnLocations[8] = new PointObject(64*scaling,150*scaling);
+        robotSpawnLocations[9] = new PointObject(160*scaling,150*scaling);
+        robotSpawnLocations[10] = new PointObject(206*scaling,150*scaling);
     }
 
-    public void drawBoarders(){
-        DisplayManager.graphicsContext.setFill(Color.rgb(0,0,108));
-        for(Wall wall : boarders) {
-            DisplayManager.graphicsContext.fillRect(wall.getXCoordinate(),wall.getYCoordinate(),wall.getObjectWidth(),wall.getObjectHeight());
+    private void spawnRobotsAtRandomPositions(){
+        Random random = new Random();
+        int numberOfRobots = random.nextInt(11);
+        System.out.println("Number of robots spawned: "+ numberOfRobots);
+        ArrayList<Integer> spawnedPositions = new ArrayList<Integer>();
+        for(int i = 0; i < numberOfRobots; i++){
+            Integer randomSpawnLocation = random.nextInt(11);
+            if(!spawnedPositions.stream().anyMatch(e -> e.equals(randomSpawnLocation)))
+            {
+                spawnedPositions.add(randomSpawnLocation);
+                new Robot((int)robotSpawnLocations[randomSpawnLocation].getXCoordinate(),(int)robotSpawnLocations[randomSpawnLocation].getYCoordinate(), gameObjectManager.getPlayer(), gameObjectManager);
+            } else {
+                i--;
+            }
         }
-
-        //DisplayManager.graphicsContext.fillRect(248*scaling,204*scaling,10,10);
-        //DisplayManager.graphicsContext.fillRect(248*scaling,135*scaling,10,10);
     }
 
     /*private void generateBoarders() {
@@ -131,6 +159,8 @@ public class RoomGenerator {
     }*/
 
     private void setupCells() {
+        //ArrayList<PointObject> pillarPositions;
+        //cells[4][0] = new Cell(,true,false)
         cells[4][0].setWallRight(true);
         cells[4][1].setWallRight(true);
         cells[4][2].setWallRight(true);
@@ -139,39 +169,42 @@ public class RoomGenerator {
         cells[2][2].setWallBottom(true);
         cells[3][2].setWallBottom(true);
         cells[4][2].setWallBottom(true);
+    }
 
-        for(int i=0;i<5;i++){
-            for(int j=0;j<3;j++){
-                //cell[i][j].setNeighboringPillars(new ArrayList<Wall>().add(boarders.get(0)));
-            }
+    public void generateNextLevel(Direction previousRoomDirection){
+        destroyAllEntities();
+        spawnRobotsAtRandomPositions();
+        placePlayerAtCorrectPosition(previousRoomDirection);
+        closeDoorAtCorrectPosition(previousRoomDirection);
+    }
+
+    private void placePlayerAtCorrectPosition(Direction previousRoomDirection){
+        switch (previousRoomDirection){
+            case UP -> gameObjectManager.getPlayer().setPosition(120*scaling,180*scaling);
+            case DOWN -> gameObjectManager.getPlayer().setPosition(120*scaling,20*scaling);
+            case LEFT -> gameObjectManager.getPlayer().setPosition(230*scaling,95*scaling);
+            case RIGHT -> gameObjectManager.getPlayer().setPosition(30*scaling,95*scaling);
+        }
+    }
+    private void closeDoorAtCorrectPosition(Direction doorDirection){
+        gameObjectManager.getPathways().stream().filter(Pathway::isHasDoor).findFirst().ifPresent(Pathway::openDoor);
+        switch (doorDirection){
+            case UP -> gameObjectManager.getPathways().stream().filter(c -> c.getDirection() == Direction.DOWN).findFirst().ifPresent(Pathway::closeDoor);
+            case DOWN -> gameObjectManager.getPathways().stream().filter(c -> c.getDirection() == Direction.UP).findFirst().ifPresent(Pathway::closeDoor);
+            case RIGHT -> gameObjectManager.getPathways().stream().filter(c -> c.getDirection() == Direction.LEFT).findFirst().ifPresent(Pathway::closeDoor);
+            case LEFT -> gameObjectManager.getPathways().stream().filter(c -> c.getDirection() == Direction.RIGHT).findFirst().ifPresent(Pathway::closeDoor);
         }
     }
 
-    /*public void drawMazePoints() {
-        DisplayManager.graphicsContext.setFill(Color.rgb(0,0,108));
-        for(int i=0;i<8;i++) {
-            DisplayManager.graphicsContext.fillRect(getMazePoints().get(i).getX(),getMazePoints().get(i).getY(),12,12);
-        }
-    }
-
-    */
-    public void fillBackground(Color color) {
-        DisplayManager.graphicsContext.setFill(color);
-        DisplayManager.graphicsContext.fillRect(0,0,DisplayManager.WIDTH*scaling,DisplayManager.HEIGHT*scaling);
-    }
-    /*
-
-    public void drawBoarders() {
-        DisplayManager.graphicsContext.setStroke(Color.rgb(0,0,108));
-        DisplayManager.graphicsContext.setLineWidth(getBoarders().get(0).getThickness());
-
-        for(int i=0;i<12;i+=3) {
-            DisplayManager.graphicsContext.strokeLine(getBoarders().get(i).getX(),getBoarders().get(i).getY(),
-                    getBoarders().get(i+1).getX(),getBoarders().get(i+1).getY());
-
-            DisplayManager.graphicsContext.strokeLine(getBoarders().get(i).getX(),getBoarders().get(i).getY(),
-                    getBoarders().get(i+2).getX(),getBoarders().get(i+2).getY());
+    private void destroyAllEntities(){
+        for(int i=0;i<gameObjectManager.getRobots().size();i++){
+            gameObjectManager.getRobots().get(i).destroy();
+            i--;
         }
 
-    }*/
+        for(int i=0;i<gameObjectManager.getAllBullets().size();i++){
+            gameObjectManager.getAllBullets().get(i).destroy();
+            i--;
+        }
+    }
 }

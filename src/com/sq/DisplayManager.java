@@ -1,33 +1,39 @@
 package com.sq;
 
+import GameObjects.Bullet;
+import GameObjects.Player;
+import GameObjects.Robot;
+import GameObjects.Wall;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class DisplayManager extends Application {
-    public static final int WIDTH = 256,HEIGHT = 224;
     public static final int scaling = 3;
-    public static AnchorPane mainPane;
     public static Scene mainScene;
-    public static Stage mainStage;
-    public static Canvas canvas;
-    public static GraphicsContext graphicsContext;
+    private final int WIDTH = 256,HEIGHT = 224;
+    private final Stage mainStage;
+    private final GraphicsContext graphicsContext;
+    private final GameManager gameManager;
 
     public DisplayManager() {
-        this.mainPane = new AnchorPane();
-        canvas = new Canvas(WIDTH*scaling,HEIGHT*scaling);
+        AnchorPane mainPane = new AnchorPane();
+        Canvas canvas = new Canvas(WIDTH * scaling, HEIGHT * scaling);
         graphicsContext = canvas.getGraphicsContext2D();
         mainPane.getChildren().add(canvas);
-        this.mainScene = new Scene(mainPane,canvas.getWidth(), canvas.getHeight());
+        mainScene = new Scene(mainPane, canvas.getWidth(), canvas.getHeight());
         this.mainStage = new Stage();
         this.mainStage.setScene(mainScene);
-
+        gameManager = new GameManager();
     }
 
     public static void main(String[] args) {
@@ -35,7 +41,13 @@ public class DisplayManager extends Application {
     }
 
     private void run() {
-        GameManager.getInstance().startGame();
+        //GameManager.getInstance().startGame();
+        if(gameManager.getGameObjectManager() != null){
+            drawRoom();
+            displayGameOverText();
+            //gameManager.runGame();
+            gameManager.runGame();
+        }
     }
 
 
@@ -55,4 +67,64 @@ public class DisplayManager extends Application {
         }
     }
 
+    private void drawRoom(){
+        fillBackground();
+        displayWalls();
+        displayRobots();
+        displayPlayer();
+        displayBullets();
+    }
+
+    private void displayWalls(){
+        for(Wall wall : gameManager.getGameObjectManager().getWalls()) {
+            graphicsContext.setFill(wall.getColor());
+            graphicsContext.fillRect(wall.getXCoordinate(),wall.getYCoordinate(),wall.getObjectWidth(),wall.getObjectHeight());
+        }
+    }
+
+    private void fillBackground() {
+        graphicsContext.setFill(Color.BLACK);
+        graphicsContext.fillRect(0,0,WIDTH*scaling,HEIGHT*scaling);
+    }
+
+    private void displayRobots(){
+        for(Robot robot : gameManager.getGameObjectManager().getRobots()){
+            if(robot.isActive()){
+                graphicsContext.drawImage(robot.getAiController().getCurrentSprite().getImage(),robot.getXCoordinate(), robot.getYCoordinate(),
+                        robot.getAiController().getCurrentSprite().getWidth(), robot.getAiController().getCurrentSprite().getHeight());
+            }
+        }
+    }
+    private void displayPlayer(){
+        Player player = gameManager.getGameObjectManager().getPlayer();
+        if(player != null){
+            if(player.isActive()){
+                graphicsContext.drawImage(
+                        player.getPlayerController().getCurrentSprite().getImage(),
+                        player.getXCoordinate(), player.getYCoordinate(),
+                        player.getPlayerController().getCurrentSprite().getWidth(),
+                        player.getPlayerController().getCurrentSprite().getHeight()
+                );
+            }
+        }
+    }
+
+    private void displayGameOverText(){
+        if(gameManager.isGameOver()){
+            graphicsContext.setStroke(Color.WHITE);
+            graphicsContext.setTextAlign(TextAlignment.CENTER);
+            graphicsContext.setTextBaseline(VPos.CENTER);
+            graphicsContext.strokeText("Game Over!\n" +
+                    " Press Enter to restart or q to quit",WIDTH*scaling/2,HEIGHT*scaling/2);
+        }
+    }
+
+    private void displayBullets(){
+        for(Bullet bullet:gameManager.getGameObjectManager().getAllBullets()){
+            if(bullet.isActive()){
+                graphicsContext.drawImage(bullet.getBulletController().getCurrentSprite().getImage(),bullet.getXCoordinate(), bullet.getYCoordinate(),
+                        bullet.getBulletController().getCurrentSprite().getWidth(), bullet.getBulletController().getCurrentSprite().getHeight());
+            }
+        }
+    }
 }

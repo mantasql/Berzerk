@@ -1,49 +1,90 @@
 package com.sq;
 
-import GameObjects.Bullet;
-import GameObjects.Player;
-import GameObjects.Robot;
-import GameObjects.Wall;
+import GameObjects.*;
 
 import java.util.ArrayList;
 
-public class GameObjectManager {
+import static com.sq.DisplayManager.scaling;
+
+public class GameObjectManager{
     private ArrayList<Wall> walls;
     private Player player;
     private ArrayList<Bullet> enemyBullets;
     private ArrayList<Bullet> playerBullets;
     private ArrayList<Robot> robots;
+    private ArrayList<Pathway> pathways;
+    private ArrayList<Bullet> allBullets;
 
-    public GameObjectManager(Player player) {
+    public GameObjectManager() {
         this.walls = new ArrayList<Wall>();
-        this.player = player;
+        this.player = null;
         this.enemyBullets = new ArrayList<Bullet>();
         this.playerBullets = new ArrayList<Bullet>();
         this.robots = new ArrayList<Robot>();
+        this.pathways = new ArrayList<Pathway>();
+        this.allBullets = new ArrayList<Bullet>();
     }
 
-    public boolean didPlayerCollide() {
+    public void managePlayerCollisions() {
+        if(didPlayerCollideWithWall())
+            onPlayerCollision();
+
+        if(didPlayerCollideWithBullet())
+            onPlayerCollision();
+    }
+
+    public void manageBulletCollisions(){
+        destroyBulletOnCollision();
+    }
+    public void manageEnemyCollisions(){
+        destroyEnemyOnCollision();
+    }
+
+    private boolean didPlayerCollideWithWall(){
         for(Wall wall : walls) {
             if(player != null){
-                if(player.getColliderBox().intersects(wall.getColliderBox()))
+                if(player.getBoxCollider().intersects(wall.getBoxCollider()))
+                {
                     return true;
-            }
-        }
-        for(Bullet bullet : enemyBullets){
-            if(player != null){
-                if(player.getColliderBox().intersects(bullet.getColliderBox()))
-                    return true;
+                }
             }
         }
         return false;
     }
 
-    public void destroyBulletOnCollision() {
+    private boolean didPlayerCollideWithBullet(){
+        for(Bullet bullet : enemyBullets){
+            if(player != null){
+                if(player.getBoxCollider().intersects(bullet.getBoxCollider()))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public Direction returnPathwayDirectionIfCollided(){
+        for(Pathway pathway : pathways){
+            if(player != null){
+                if(player.getBoxCollider().intersects(pathway.getBoxCollider())){
+                    return pathway.getDirection();
+                }
+            }
+        }
+        return null;
+    }
+
+    private void destroyBulletOnCollision() {
         for(Wall wall: walls){
-            Bullet playerBullet = playerBullets.stream().filter(c -> c.getColliderBox().intersects(wall.getColliderBox())).findFirst().orElse(null);
+            Bullet playerBullet = playerBullets.stream().filter(c -> c.getBoxCollider().intersects(wall.getBoxCollider())).findFirst().orElse(null);
+            Bullet enemyBullet = enemyBullets.stream().filter(c -> c.getBoxCollider().intersects(wall.getBoxCollider())).findFirst().orElse(null);
             if(playerBullet != null){
-                playerBullet.setActive(false);
-                playerBullets.remove(playerBullet);
+                playerBullet.destroy();
+                break;
+            }
+            if(enemyBullet != null){
+                enemyBullet.destroy();
                 break;
             }
         }
@@ -51,23 +92,44 @@ public class GameObjectManager {
 
     public void destroyEnemyOnCollision() {
         for(Wall wall:walls){
-            Robot robot = robots.stream().filter(c -> c.getBoxCollider().intersects(wall.getColliderBox())).findFirst().orElse(null);
+            Robot robot = robots.stream().filter(c -> c.getBoxCollider().intersects(wall.getBoxCollider())).findFirst().orElse(null);
             if(robot != null){
-                robot.setActive(false);
-                robots.remove(robot);
+                robot.destroy();
                 break;
             }
         }
 
         for(Bullet bullet:playerBullets){
-            Robot robot = robots.stream().filter(c -> c.getBoxCollider().intersects(bullet.getColliderBox())).findFirst().orElse(null);
+            Robot robot = robots.stream().filter(c -> c.getBoxCollider().intersects(bullet.getBoxCollider())).findFirst().orElse(null);
             if(robot != null){
                 robot.destroy();
                 bullet.destroy();
                 break;
             }
         }
+
+        for(Bullet bullet:enemyBullets){
+            Robot robot = robots.stream().filter(c -> c.getBoxCollider().intersects(bullet.getBoxCollider())).findFirst().orElse(null);
+            if(robot != null && bullet.getParentGameObject() != robot){
+                bullet.destroy();
+                robot.destroy();
+                break;
+            }
+        }
     }
+
+    private void onPlayerCollision() {
+        int playerHealth = player.getHealth() - 1;
+        if(playerHealth > 0) {
+            player.setHealth(playerHealth);
+            player.setPosition(65*scaling,83*scaling);
+        } else {
+            player.setActive(false);
+            player.destroy();
+        }
+        System.out.println("Player health: " + playerHealth);
+    }
+
 
     public ArrayList<Wall> getWalls() {
         return walls;
@@ -85,20 +147,23 @@ public class GameObjectManager {
         this.player = player;
     }
 
-    public ArrayList<Bullet> getEnemyBullets() {
-        return enemyBullets;
+    public void addEnemyBullets(Bullet bullet) {
+        allBullets.add(bullet);
+        enemyBullets.add(bullet);
     }
 
-    public void setEnemyBullets(ArrayList<Bullet> enemyBullets) {
-        this.enemyBullets = enemyBullets;
+    public void addPlayerBullets(Bullet bullet) {
+        allBullets.add(bullet);
+        playerBullets.add(bullet);
     }
 
-    public ArrayList<Bullet> getPlayerBullets() {
-        return playerBullets;
+    public void removePlayerBullets(Bullet bullet){
+        allBullets.remove(bullet);
+        playerBullets.remove(bullet);
     }
-
-    public void setPlayerBullets(ArrayList<Bullet> playerBullets) {
-        this.playerBullets = playerBullets;
+    public void removeEnemyBullets(Bullet bullet){
+        allBullets.remove(bullet);
+        enemyBullets.remove(bullet);
     }
 
     public ArrayList<Robot> getRobots() {
@@ -107,5 +172,17 @@ public class GameObjectManager {
 
     public void setRobots(ArrayList<Robot> robots) {
         this.robots = robots;
+    }
+
+    public ArrayList<Pathway> getPathways() {
+        return pathways;
+    }
+
+    public void setPathways(ArrayList<Pathway> pathways) {
+        this.pathways = pathways;
+    }
+
+    public ArrayList<Bullet> getAllBullets() {
+        return allBullets;
     }
 }

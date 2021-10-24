@@ -12,12 +12,11 @@ import static com.sq.DisplayManager.scaling;
 public class Robot extends GameObject implements IDestroyable {
     private float movementSpeed = 0.2f;
     private AIController aiController;
-    private Rectangle2D boxCollider;
     public Robot(int xCoordinate,int yCoordinate,GameObject target,GameObjectManager gameObjectManager){
         super(xCoordinate,yCoordinate,8*scaling,12*scaling,"Robot",gameObjectManager);
         gameObjectManager.getRobots().add(this);
         setObjectSprites();
-        boxCollider = new Rectangle2D(xCoordinate,yCoordinate,getObjectWidth(),getObjectHeight());
+        setBoxCollider(new Rectangle2D(xCoordinate,yCoordinate,getObjectWidth(),getObjectHeight()));
         aiController = new AIController(this,target);
     }
 
@@ -31,18 +30,15 @@ public class Robot extends GameObject implements IDestroyable {
         return movementSpeed;
     }
 
-    public Rectangle2D getBoxCollider() {
-        return boxCollider;
-    }
-
-    public void setBoxCollider(Rectangle2D boxCollider) {
-        this.boxCollider = boxCollider;
-    }
-
     @Override
     public void destroy() {
         this.setActive(false);
         aiController.stop();
+        aiController = null;
         getGameObjectManager().getRobots().remove(this);
+    }
+
+    public AIController getAiController() {
+        return aiController;
     }
 }

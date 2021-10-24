@@ -3,22 +3,22 @@ package GameObjects;
 import com.sq.GameObject;
 import Controllers.PlayerController;
 import com.sq.GameObjectManager;
+import com.sq.IDestroyable;
 import com.sq.Sprite;
 import javafx.geometry.Rectangle2D;
 
 import static com.sq.DisplayManager.scaling;
 
-public class Player extends GameObject {
+public class Player extends GameObject implements IDestroyable {
     private int health = 3;
     private int movementSpeed = 10;
     private PlayerController playerController;
-    private Rectangle2D colliderBox;
 
     public Player(GameObjectManager gameObjectManager) {
-        super(49*scaling, 83*scaling,8*scaling,12*scaling,"Player",gameObjectManager);
+        super(30*scaling, 95*scaling,8*scaling,12*scaling,"Player",gameObjectManager);
         gameObjectManager.setPlayer(this);
         setObjectSprites();
-        colliderBox = new Rectangle2D(getXCoordinate(),getYCoordinate(),getObjectWidth(),getObjectHeight());
+        setBoxCollider(new Rectangle2D(getXCoordinate(),getYCoordinate(),getObjectWidth(),getObjectHeight()));
         playerController = new PlayerController(this);
     }
 
@@ -34,16 +34,11 @@ public class Player extends GameObject {
         sprites[7] = new Sprite("textures/ShootLeft2.png",5*scaling,12*scaling);
         setSprites(sprites);
     }
+
+
+
     public int getMovementSpeed() {
         return movementSpeed;
-    }
-
-    public Rectangle2D getColliderBox() {
-        return colliderBox;
-    }
-
-    public void setColliderBox(Rectangle2D colliderBox) {
-        this.colliderBox = colliderBox;
     }
 
     public int getHealth() {
@@ -52,5 +47,15 @@ public class Player extends GameObject {
 
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    @Override
+    public void destroy() {
+        setActive(false);
+        getGameObjectManager().setPlayer(null);
+    }
+
+    public PlayerController getPlayerController() {
+        return playerController;
     }
 }

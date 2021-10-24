@@ -2,18 +2,17 @@ package Controllers;
 
 import GameObjects.Bullet;
 import GameObjects.Player;
-import com.sq.*;
-import javafx.animation.AnimationTimer;
+import com.sq.Direction;
+import com.sq.DisplayManager;
+import com.sq.Sprite;
 import javafx.event.EventHandler;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class PlayerController extends AnimationTimer implements EventHandler<InputEvent> {
+public class PlayerController implements EventHandler<InputEvent> {
 
     private Player player;
-    private MoveDirection currentMoveDirection = MoveDirection.EAST;
 
     private boolean isShooting;
     private long timeOfLastProjectile = 0;
@@ -25,7 +24,6 @@ public class PlayerController extends AnimationTimer implements EventHandler<Inp
         currentSprite = player.getSprites()[0];
         isShooting = false;
         DisplayManager.mainScene.addEventHandler(KeyEvent.KEY_PRESSED,this);
-        start();
     }
 
     @Override
@@ -43,46 +41,37 @@ public class PlayerController extends AnimationTimer implements EventHandler<Inp
 
             float playerXCoordinate = player.getXCoordinate();
             float playerYCoordinate = player.getYCoordinate();
+            float speed = player.getMovementSpeed();
 
             if(moveLeft && moveUp){
-                player.setXCoordinate(playerXCoordinate - player.getMovementSpeed());
-                player.setYCoordinate(playerYCoordinate + player.getMovementSpeed());
-                currentMoveDirection = MoveDirection.WEST;
+                player.setPosition(playerXCoordinate - speed,playerYCoordinate + speed);
                 currentSprite = player.getSprites()[3];
             }
             else if(moveLeft && moveDown){
-                player.setXCoordinate(playerXCoordinate - player.getMovementSpeed());
-                player.setYCoordinate(playerYCoordinate - player.getMovementSpeed());
-                currentMoveDirection = MoveDirection.WEST;
+                player.setPosition(playerXCoordinate - speed, playerYCoordinate - speed);
                 currentSprite = player.getSprites()[3];
             }
             else if(moveRight && moveUp){
-                player.setXCoordinate(playerXCoordinate + player.getMovementSpeed());
-                player.setYCoordinate(playerYCoordinate + player.getMovementSpeed());
-                currentMoveDirection = MoveDirection.EAST;
+                player.setPosition(playerXCoordinate + speed, playerYCoordinate + speed);
                 currentSprite = player.getSprites()[0];
             }
             else if(moveRight && moveDown){
-                player.setXCoordinate(playerXCoordinate + player.getMovementSpeed());
-                player.setYCoordinate(playerYCoordinate - player.getMovementSpeed());
-                currentMoveDirection = MoveDirection.EAST;
+                player.setPosition(playerXCoordinate + speed,playerYCoordinate - speed);
                 currentSprite = player.getSprites()[0];
             }
             else if(moveLeft){
-                player.setXCoordinate(playerXCoordinate - player.getMovementSpeed());
-                currentMoveDirection = MoveDirection.WEST;
+                player.setPosition(playerXCoordinate - speed,playerYCoordinate);
                 currentSprite = player.getSprites()[3];
             }
             else if(moveRight){
-                player.setXCoordinate(playerXCoordinate + player.getMovementSpeed());
-                currentMoveDirection = MoveDirection.EAST;
+                player.setPosition(playerXCoordinate + speed,playerYCoordinate);
                 currentSprite = player.getSprites()[0];
             }
             else if(moveUp){
-                player.setYCoordinate(playerYCoordinate - player.getMovementSpeed());
+                player.setPosition(playerXCoordinate,playerYCoordinate - speed);
             }
             else if(moveDown){
-                player.setYCoordinate(playerYCoordinate + player.getMovementSpeed());
+                player.setPosition(playerXCoordinate,playerYCoordinate + speed);
             }
 
             if(shootRight){
@@ -114,10 +103,7 @@ public class PlayerController extends AnimationTimer implements EventHandler<Inp
                     new Bullet(playerXCoordinate,playerYCoordinate,Direction.DOWN,player.getGameObjectManager(),player);
                 }
             }
-
             delayTimeBetweenShots();
-
-            player.setColliderBox(new Rectangle2D(player.getXCoordinate(), player.getYCoordinate(), player.getObjectWidth(), player.getObjectHeight()));
         }
     }
 
@@ -132,11 +118,7 @@ public class PlayerController extends AnimationTimer implements EventHandler<Inp
         }
     }
 
-    @Override
-    public void handle(long now) {
-        if(player.isActive()){
-            DisplayManager.graphicsContext.drawImage(currentSprite.getImage(),player.getXCoordinate(), player.getYCoordinate(),
-                    currentSprite.getWidth(), currentSprite.getHeight());
-        }
+    public Sprite getCurrentSprite() {
+        return currentSprite;
     }
 }

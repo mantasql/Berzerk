@@ -33,7 +33,7 @@ public class AIController extends AnimationTimer {
 
     private void shoot(){
         Direction shootDirection = checkWhereToShoot();
-        System.out.println("Player pos: "+ (int)target.getXCoordinate() +" "+ (int)target.getYCoordinate() + " Robot pos: "+(int)robot.getXCoordinate()+" "+(int)robot.getYCoordinate());
+        //System.out.println("Player pos: "+ (int)target.getXCoordinate() +" "+ (int)target.getYCoordinate() + " Robot pos: "+(int)robot.getXCoordinate()+" "+(int)robot.getYCoordinate());
         if(shootDirection != null && !isShooting){
             isShooting = true;
             new Bullet(robot.getXCoordinate(), robot.getYCoordinate(), shootDirection, robot.getGameObjectManager(), robot);
@@ -45,10 +45,6 @@ public class AIController extends AnimationTimer {
     public void handle(long now) {
         move();
         shoot();
-        if(robot.isActive()){
-            DisplayManager.graphicsContext.drawImage(currentSprite.getImage(),robot.getXCoordinate(), robot.getYCoordinate(),
-                    currentSprite.getWidth(), currentSprite.getHeight());
-        }
     }
 
     private Direction checkWhereToShoot(){
@@ -66,13 +62,15 @@ public class AIController extends AnimationTimer {
     }
 
     private void delayTimeBetweenShots(){
-        if(isShooting){
             long timeNow = System.currentTimeMillis();
             long time = timeNow - timeOfLastProjectile;
-            if (time < 0 || time > 1000) {
+            if (time > 5000) {
                 timeOfLastProjectile = timeNow;
                 isShooting = false;
-            }
         }
+    }
+
+    public Sprite getCurrentSprite() {
+        return currentSprite;
     }
 }

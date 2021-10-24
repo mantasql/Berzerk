@@ -1,18 +1,18 @@
 package com.sq;
 
-public abstract class GameObject {
-    private float xCoordinate;
-    private float yCoordinate;
+import javafx.geometry.Rectangle2D;
+
+public abstract class GameObject extends PointObject{
     private int objectWidth;
     private int objectHeight;
     private Sprite[] sprites;
     private boolean isActive;
     private GameObjectManager gameObjectManager;
     private String tag;
+    private Rectangle2D boxCollider;
 
     public GameObject(float xCoordinate,float yCoordinate, int objectWidth, int objectHeight,String tag, GameObjectManager gameObjectManager) {
-        this.xCoordinate = xCoordinate;
-        this.yCoordinate = yCoordinate;
+        super(xCoordinate,yCoordinate);
         this.objectWidth = objectWidth;
         this.objectHeight = objectHeight;
         this.tag = tag;
@@ -20,22 +20,9 @@ public abstract class GameObject {
         this.gameObjectManager = gameObjectManager;
     };
 
-    public GameObject(){}
-
-    public float getXCoordinate() {
-        return xCoordinate;
-    }
-
-    public void setXCoordinate(float xCoordinate) {
-        this.xCoordinate = xCoordinate;
-    }
-
-    public float getYCoordinate() {
-        return yCoordinate;
-    }
-
-    public void setYCoordinate(float yCoordinate) {
-        this.yCoordinate = yCoordinate;
+    public GameObject() {
+        super(0,0);
+        isActive = true;
     }
 
     public Sprite[] getSprites() {
@@ -44,11 +31,6 @@ public abstract class GameObject {
 
     public void setSprites(Sprite[] sprites) {
         this.sprites = sprites;
-    }
-
-    public void setPosition(float xCoordinate, float yCoordinate) {
-        this.xCoordinate = xCoordinate;
-        this.yCoordinate = yCoordinate;
     }
 
     public int getObjectWidth() {
@@ -81,5 +63,23 @@ public abstract class GameObject {
 
     public String getTag() {
         return tag;
+    }
+
+    public Rectangle2D getBoxCollider() {
+        return boxCollider;
+    }
+
+    public void setBoxCollider(Rectangle2D boxCollider) {
+        this.boxCollider = boxCollider;
+    }
+
+    public void setPosition(float xCoordinate, float yCoordinate) {
+        setXCoordinate(xCoordinate);
+        setYCoordinate(yCoordinate);
+        boxCollider = new Rectangle2D(xCoordinate,yCoordinate,objectWidth,objectHeight);
+    }
+
+    public void setGameObjectManager(GameObjectManager gameObjectManager) {
+        this.gameObjectManager = gameObjectManager;
     }
 }

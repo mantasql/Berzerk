@@ -1,23 +1,22 @@
 package com.sq;
 
-import GameObjects.Wall;
-
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Cell {
     private boolean wallBottom;
     private boolean wallRight;
-    private Wall middlePoint;
-    private ArrayList<Wall> neighboringPillars;
+    private ArrayList<PointObject> neighboringPillars;
 
-    public Cell () {
-        wallBottom = false;
-        wallRight = false;
+    public Cell (ArrayList<PointObject> neighboringPillars, boolean wallBottom, boolean wallRight) {
+        this.wallBottom = wallBottom;
+        this.wallRight = wallRight;
+        this.neighboringPillars = neighboringPillars;
+        generateCell();
     }
 
-    private void generateCells() {
-        if(wallBottom == false && wallRight == false) {
+    private void generateCell() {
+        if(!wallBottom && !wallRight) {
             Random random = new Random();
             boolean randomBoolean = random.nextBoolean();
             if(randomBoolean) {
@@ -25,10 +24,6 @@ public class Cell {
             }
             else wallBottom = true;
         }
-    }
-
-    private void draw() {
-
     }
 
     public boolean isWallBottom() {
@@ -47,11 +42,7 @@ public class Cell {
         this.wallRight = wallRight;
     }
 
-    public ArrayList<Wall> getNeighboringPillars() {
+    public ArrayList<PointObject> getNeighboringPillars() {
         return neighboringPillars;
-    }
-
-    public void setNeighboringPillars(ArrayList<Wall> neighboringPillars) {
-        this.neighboringPillars = neighboringPillars;
     }
 }
