@@ -8,21 +8,15 @@ import java.util.Random;
 import static com.sq.DisplayManager.scaling;
 
 public class RoomGenerator {
-    //private ArrayList<Wall> mazeMiddlePoints;
     private ArrayList<Wall> boarders;
-    //private ArrayList<Wall> walls;
     private ArrayList<Pathway> pathways;
     private PointObject[] robotSpawnLocations;
-    private Cell[][] cells;
     private int wallThickness = 4*scaling;
-    private GameObjectManager gameObjectManager;
+    private final GameObjectManager gameObjectManager;
 
     public RoomGenerator(GameObjectManager gameObjectManager) {
-        cells = new Cell[5][3];
-        boarders = new ArrayList<Wall>();
-        //mazeMiddlePoints = new ArrayList<Wall>();
-        //walls = new ArrayList<Wall>();
-        pathways = new ArrayList<Pathway>();
+        boarders = new ArrayList<>();
+        pathways = new ArrayList<>();
         robotSpawnLocations = new PointObject[11];
         this.gameObjectManager = gameObjectManager;
         firstTimeSetup();
@@ -73,8 +67,6 @@ public class RoomGenerator {
     }
 
     private void setupRobotSpawnLocations(){
-        //randomize how many robots spawn at a time and their spawn position.
-        //PointObject[] robotSpawnLocations = new PointObject[11];
         robotSpawnLocations[0] = new PointObject(12*scaling,12*scaling);
         robotSpawnLocations[1] = new PointObject(64*scaling,12*scaling);
         robotSpawnLocations[2] = new PointObject(160*scaling,12*scaling);
@@ -92,10 +84,10 @@ public class RoomGenerator {
         Random random = new Random();
         int numberOfRobots = random.nextInt(11);
         System.out.println("Number of robots spawned: "+ numberOfRobots);
-        ArrayList<Integer> spawnedPositions = new ArrayList<Integer>();
+        ArrayList<Integer> spawnedPositions = new ArrayList<>();
         for(int i = 0; i < numberOfRobots; i++){
             Integer randomSpawnLocation = random.nextInt(11);
-            if(!spawnedPositions.stream().anyMatch(e -> e.equals(randomSpawnLocation)))
+            if(spawnedPositions.stream().noneMatch(e -> e.equals(randomSpawnLocation)))
             {
                 spawnedPositions.add(randomSpawnLocation);
                 new Robot((int)robotSpawnLocations[randomSpawnLocation].getXCoordinate(),(int)robotSpawnLocations[randomSpawnLocation].getYCoordinate(), gameObjectManager.getPlayer(), gameObjectManager);
@@ -103,72 +95,6 @@ public class RoomGenerator {
                 i--;
             }
         }
-    }
-
-    /*private void generateBoarders() {
-        Wall wall0 = new Wall(4*scaling,104*scaling,0);
-        Wall wall1 = new Wall(4*scaling,151*scaling,0);
-        Wall wall2 = new Wall(4*scaling,4*scaling,72*scaling);
-        Wall wall3 = new Wall(4*scaling,4*scaling,132*scaling);
-        Wall wall4 = new Wall(4*scaling,104*scaling,204*scaling);
-        Wall wall5 = new Wall(4*scaling,151*scaling,204*scaling);
-        Wall wall6 = new Wall(4*scaling,248*scaling,72*scaling);
-        Wall wall7 = new Wall(4*scaling,248*scaling,135*scaling);
-
-        //Map corner points
-        Wall upperLeftCornerPoint = new Wall(4*scaling,4*scaling,0);
-        Wall bottomLeftCornerPoint = new Wall(4*scaling,4*scaling,204*scaling);
-        Wall upperRightCornerPoint = new Wall(4*scaling,248*scaling,0);
-        Wall bottomRightCornerPoint = new Wall(4*scaling,248*scaling,204*scaling);
-
-        boarders.add(upperLeftCornerPoint);
-        boarders.add(wall0);
-        boarders.add(wall2);
-
-        boarders.add(upperRightCornerPoint);
-        boarders.add(wall1);
-        boarders.add(wall6);
-
-        boarders.add(bottomLeftCornerPoint);
-        boarders.add(wall3);
-        boarders.add(wall4);
-
-        boarders.add(bottomRightCornerPoint);
-        boarders.add(wall5);
-        boarders.add(wall7);
-    }
-
-    private void generateMazeMiddlePoints() {
-        Pillar wallPoint0 = new Pillar(4*scaling,56*scaling,68*scaling);
-        Wall wallPoint1 = new Wall(4*scaling,104*scaling,68*scaling);
-        Wall wallPoint2 = new Wall(4*scaling,152*scaling,68*scaling);
-        Wall wallPoint3 = new Wall(4*scaling,200*scaling,68*scaling);
-        Wall wallPoint4 = new Wall(4*scaling,56*scaling,136*scaling);
-        Wall wallPoint5 = new Wall(4*scaling,104*scaling,136*scaling);
-        Wall wallPoint6 = new Wall(4*scaling,152*scaling,136*scaling);
-        Wall wallPoint7 = new Wall(4*scaling,200*scaling,136*scaling);
-
-        mazeMiddlePoints.add(wallPoint0);
-        mazeMiddlePoints.add(wallPoint1);
-        mazeMiddlePoints.add(wallPoint2);
-        mazeMiddlePoints.add(wallPoint3);
-        mazeMiddlePoints.add(wallPoint4);
-        mazeMiddlePoints.add(wallPoint5);
-        mazeMiddlePoints.add(wallPoint6);
-        mazeMiddlePoints.add(wallPoint7);
-    }*/
-
-    private void setupCells() {
-        //ArrayList<PointObject> pillarPositions;
-        //cells[4][0] = new Cell(,true,false)
-        cells[4][0].setWallRight(true);
-        cells[4][1].setWallRight(true);
-        cells[4][2].setWallRight(true);
-        cells[0][2].setWallBottom(true);
-        cells[1][2].setWallBottom(true);
-        cells[2][2].setWallBottom(true);
-        cells[3][2].setWallBottom(true);
-        cells[4][2].setWallBottom(true);
     }
 
     public void generateNextLevel(Direction previousRoomDirection){

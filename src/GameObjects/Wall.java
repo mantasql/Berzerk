@@ -8,9 +8,9 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
 
 public class Wall extends GameObject implements IDestroyable {
-    private int thickness;
-    private PointObject pointObject1;
-    private PointObject pointObject2;
+    private final int thickness;
+    private final PointObject pointObject1;
+    private final PointObject pointObject2;
     private Color color;
 
     public Wall(PointObject pointObject1, PointObject pointObject2, int thickness, GameObjectManager gameObjectManager) {

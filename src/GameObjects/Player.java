@@ -11,7 +11,7 @@ import static com.sq.DisplayManager.scaling;
 
 public class Player extends GameObject implements IDestroyable {
     private int health = 3;
-    private int movementSpeed = 10;
+    private float movementSpeed = 10;
     private PlayerController playerController;
 
     public Player(GameObjectManager gameObjectManager) {
@@ -37,7 +37,7 @@ public class Player extends GameObject implements IDestroyable {
 
 
 
-    public int getMovementSpeed() {
+    public float getMovementSpeed() {
         return movementSpeed;
     }
 
