@@ -1,4 +1,4 @@
-package com.sq;
+package GameObjects;
 
 public class PointObject {
     private float xCoordinate;

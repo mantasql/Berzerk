@@ -1,15 +1,14 @@
 package GameObjects;
 
-import com.sq.GameObject;
 import Controllers.PlayerController;
-import com.sq.GameObjectManager;
-import com.sq.IDestroyable;
+import Managers.GameObjectManager;
+import com.sq.Destroyable;
 import com.sq.Sprite;
 import javafx.geometry.Rectangle2D;
 
-import static com.sq.DisplayManager.scaling;
+import static Managers.DisplayManager.scaling;
 
-public class Player extends GameObject implements IDestroyable {
+public class Player extends GameObject implements Destroyable {
     private int health = 3;
     private float movementSpeed = 10;
     private PlayerController playerController;

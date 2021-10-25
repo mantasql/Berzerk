@@ -1,11 +1,12 @@
 package com.sq;
 
 import GameObjects.*;
+import Managers.GameObjectManager;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import static com.sq.DisplayManager.scaling;
+import static Managers.DisplayManager.scaling;
 
 public class RoomGenerator {
     private ArrayList<Wall> boarders;

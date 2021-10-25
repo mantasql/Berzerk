@@ -1,5 +1,5 @@
 package com.sq;
 
-public interface IDestroyable {
+public interface Destroyable {
     void destroy();
 }

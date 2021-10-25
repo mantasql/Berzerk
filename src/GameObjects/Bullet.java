@@ -1,18 +1,21 @@
 package GameObjects;
 
 import Controllers.BulletController;
-import com.sq.*;
+import Managers.GameObjectManager;
+import com.sq.Direction;
+import com.sq.Destroyable;
+import com.sq.Sprite;
 import javafx.geometry.Rectangle2D;
 
-import static com.sq.DisplayManager.scaling;
+import static Managers.DisplayManager.scaling;
 
-public class Bullet extends GameObject implements IDestroyable {
+public class Bullet extends GameObject implements Destroyable {
     private int speed = 3;
     private Direction travelDirection;
     private BulletController bulletController;
     private GameObject parentGameObject;
 
-    public Bullet(float xCoordinate, float yCoordinate, Direction direction, GameObjectManager gameObjectManager,GameObject parentGameObject) {
+    public Bullet(float xCoordinate, float yCoordinate, Direction direction, GameObjectManager gameObjectManager, GameObject parentGameObject) {
         super(xCoordinate, yCoordinate, 5*scaling, scaling, parentGameObject.getTag(), gameObjectManager);
         this.parentGameObject = parentGameObject;
         if(parentGameObject.getTag().equals("Player")){

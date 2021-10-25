@@ -1,13 +1,11 @@
 package GameObjects;
 
 import com.sq.Direction;
-import com.sq.GameObject;
-import com.sq.GameObjectManager;
-import com.sq.PointObject;
+import Managers.GameObjectManager;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
 
-import static com.sq.DisplayManager.scaling;
+import static Managers.DisplayManager.scaling;
 
 public class Pathway extends GameObject {
     private Direction direction;

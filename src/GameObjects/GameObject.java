@@ -1,8 +1,10 @@
-package com.sq;
+package GameObjects;
 
+import Managers.GameObjectManager;
+import com.sq.Sprite;
 import javafx.geometry.Rectangle2D;
 
-public abstract class GameObject extends PointObject{
+public abstract class GameObject extends PointObject {
     private int objectWidth;
     private int objectHeight;
     private Sprite[] sprites;
@@ -18,7 +20,7 @@ public abstract class GameObject extends PointObject{
         this.tag = tag;
         isActive = true;
         this.gameObjectManager = gameObjectManager;
-    };
+    }
 
     public GameObject() {
         super(0,0);

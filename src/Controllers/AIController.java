@@ -1,10 +1,11 @@
 package Controllers;
 
 import GameObjects.Bullet;
+import GameObjects.GameObject;
 import GameObjects.Robot;
-import com.sq.*;
+import com.sq.Direction;
+import com.sq.Sprite;
 import javafx.animation.AnimationTimer;
-import javafx.geometry.Rectangle2D;
 
 public class AIController extends AnimationTimer {
     private Robot robot;
@@ -12,11 +13,12 @@ public class AIController extends AnimationTimer {
     private Sprite currentSprite;
     private boolean isShooting = false;
     private long timeOfLastProjectile = 0;
+    private int fireRate = 5000;
 
     public AIController(Robot robot,GameObject target) {
         this.robot = robot;
         currentSprite = robot.getSprites()[0];
-        this.target= target;
+        this.target = target;
         start();
     }
 
@@ -25,20 +27,15 @@ public class AIController extends AnimationTimer {
         float newXVelocity = Math.signum(target.getXCoordinate() - robot.getXCoordinate());
         float newYVelocity = Math.signum(target.getYCoordinate() - robot.getYCoordinate());
         robot.setPosition(robot.getXCoordinate() + newXVelocity * robot.getMovementSpeed(), robot.getYCoordinate() + newYVelocity * robot.getMovementSpeed());
-        robot.setBoxCollider(new Rectangle2D(robot.getXCoordinate(), robot.getYCoordinate(), robot.getObjectWidth(), robot.getObjectHeight()));
-        //System.out.println("player: xCoordinate: "+target.getXCoordinate() + ": player yCoordinate: "+target.getYCoordinate());
-        //System.out.println("robot: xCoordinate: "+robot.getXCoordinate() + ": robot yCoordinate: "+robot.getYCoordinate());
-        //System.out.println("new: xCoordinate: "+newXVelocity + ": new yCoordinate: "+newYVelocity);
     }
 
     private void shoot(){
+        delayTimeBetweenShots();
         Direction shootDirection = checkWhereToShoot();
-        //System.out.println("Player pos: "+ (int)target.getXCoordinate() +" "+ (int)target.getYCoordinate() + " Robot pos: "+(int)robot.getXCoordinate()+" "+(int)robot.getYCoordinate());
         if(shootDirection != null && !isShooting){
             isShooting = true;
             new Bullet(robot.getXCoordinate(), robot.getYCoordinate(), shootDirection, robot.getGameObjectManager(), robot);
         }
-        delayTimeBetweenShots();
     }
 
     @Override
@@ -64,7 +61,7 @@ public class AIController extends AnimationTimer {
     private void delayTimeBetweenShots(){
             long timeNow = System.currentTimeMillis();
             long time = timeNow - timeOfLastProjectile;
-            if (time > 5000) {
+            if (time < 0 || time > fireRate) {
                 timeOfLastProjectile = timeNow;
                 isShooting = false;
         }

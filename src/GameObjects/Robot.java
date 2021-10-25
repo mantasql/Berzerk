@@ -1,15 +1,14 @@
 package GameObjects;
 
 import Controllers.AIController;
-import com.sq.GameObject;
-import com.sq.GameObjectManager;
-import com.sq.IDestroyable;
+import Managers.GameObjectManager;
+import com.sq.Destroyable;
 import com.sq.Sprite;
 import javafx.geometry.Rectangle2D;
 
-import static com.sq.DisplayManager.scaling;
+import static Managers.DisplayManager.scaling;
 
-public class Robot extends GameObject implements IDestroyable {
+public class Robot extends GameObject implements Destroyable {
     private float movementSpeed = 0.2f;
     private AIController aiController;
     public Robot(int xCoordinate,int yCoordinate,GameObject target,GameObjectManager gameObjectManager){

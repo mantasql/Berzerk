@@ -1,5 +1,7 @@
-package com.sq;
+package Managers;
 
+import com.sq.Direction;
+import com.sq.RoomGenerator;
 import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 
@@ -8,6 +10,7 @@ public class GameManager {
     private boolean gameOver = false;
     private RoomGenerator roomGenerator;
     private GameObjectManager gameObjectManager;
+    private int currentScore;
 
     public GameManager() {
         gameObjectManager = new GameObjectManager();
@@ -16,6 +19,7 @@ public class GameManager {
 
     public void runGame(){
         checkGameCondition();
+        currentScore = gameObjectManager.getGameScore();
         if(gameOver){
             waitToResumeOrQuit();
         }
@@ -56,6 +60,7 @@ public class GameManager {
         DisplayManager.mainScene.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ENTER) {
                 restart();
+                DisplayManager.mainScene.setOnKeyPressed(null);
             } else if (event.getCode() == KeyCode.Q){
                 quit();
             }
@@ -65,4 +70,10 @@ public class GameManager {
     private void quit(){
         Platform.exit();
     }
+
+    public int getScore() {
+        return currentScore;
+    }
+
+
 }

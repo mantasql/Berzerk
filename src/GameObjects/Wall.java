@@ -1,13 +1,11 @@
 package GameObjects;
 
-import com.sq.GameObject;
-import com.sq.GameObjectManager;
-import com.sq.IDestroyable;
-import com.sq.PointObject;
+import Managers.GameObjectManager;
+import com.sq.Destroyable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
 
-public class Wall extends GameObject implements IDestroyable {
+public class Wall extends GameObject implements Destroyable {
     private final int thickness;
     private final PointObject pointObject1;
     private final PointObject pointObject2;

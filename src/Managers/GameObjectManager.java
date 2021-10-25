@@ -1,10 +1,11 @@
-package com.sq;
+package Managers;
 
 import GameObjects.*;
+import com.sq.Direction;
 
 import java.util.ArrayList;
 
-import static com.sq.DisplayManager.scaling;
+import static Managers.DisplayManager.scaling;
 
 public class GameObjectManager{
     private ArrayList<Wall> walls;
@@ -14,6 +15,7 @@ public class GameObjectManager{
     private ArrayList<Robot> robots;
     private ArrayList<Pathway> pathways;
     private ArrayList<Bullet> allBullets;
+    private int gameScore;
 
     public GameObjectManager() {
         this.walls = new ArrayList<Wall>();
@@ -95,6 +97,7 @@ public class GameObjectManager{
             Robot robot = robots.stream().filter(c -> c.getBoxCollider().intersects(wall.getBoxCollider())).findFirst().orElse(null);
             if(robot != null){
                 robot.destroy();
+                gameScore += 2;
                 break;
             }
         }
@@ -104,6 +107,7 @@ public class GameObjectManager{
             if(robot != null){
                 robot.destroy();
                 bullet.destroy();
+                gameScore += 5;
                 break;
             }
         }
@@ -113,6 +117,7 @@ public class GameObjectManager{
             if(robot != null && bullet.getParentGameObject() != robot){
                 bullet.destroy();
                 robot.destroy();
+                gameScore += 10;
                 break;
             }
         }
@@ -184,5 +189,13 @@ public class GameObjectManager{
 
     public ArrayList<Bullet> getAllBullets() {
         return allBullets;
+    }
+
+    public int getGameScore() {
+        return gameScore;
+    }
+
+    public void setGameScore(int gameScore) {
+        this.gameScore = gameScore;
     }
 }

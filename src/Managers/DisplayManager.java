@@ -1,4 +1,4 @@
-package com.sq;
+package Managers;
 
 import GameObjects.Bullet;
 import GameObjects.Player;
@@ -24,6 +24,7 @@ public class DisplayManager extends Application {
     private final Stage mainStage;
     private final GraphicsContext graphicsContext;
     private final GameManager gameManager;
+    private int highScore;
 
     public DisplayManager() {
         AnchorPane mainPane = new AnchorPane();
@@ -41,11 +42,8 @@ public class DisplayManager extends Application {
     }
 
     private void run() {
-        //GameManager.getInstance().startGame();
         if(gameManager.getGameObjectManager() != null){
-            drawRoom();
-            displayGameOverText();
-            //gameManager.runGame();
+            drawGame();
             gameManager.runGame();
         }
     }
@@ -73,6 +71,13 @@ public class DisplayManager extends Application {
         displayRobots();
         displayPlayer();
         displayBullets();
+        displayScore();
+    }
+
+    private void drawGame(){
+        drawRoom();
+        setHighScore();
+        displayGameOverText();
     }
 
     private void displayWalls(){
@@ -124,6 +129,23 @@ public class DisplayManager extends Application {
             if(bullet.isActive()){
                 graphicsContext.drawImage(bullet.getBulletController().getCurrentSprite().getImage(),bullet.getXCoordinate(), bullet.getYCoordinate(),
                         bullet.getBulletController().getCurrentSprite().getWidth(), bullet.getBulletController().getCurrentSprite().getHeight());
+            }
+        }
+    }
+
+    private void displayScore(){
+        graphicsContext.setStroke(Color.WHITE);
+        graphicsContext.setTextAlign(TextAlignment.CENTER);
+        graphicsContext.setTextBaseline(VPos.CENTER);
+        graphicsContext.strokeText(String.valueOf(gameManager.getScore()),WIDTH*scaling/4-100,HEIGHT*scaling-20);
+        graphicsContext.strokeText("High score: " + String.valueOf(highScore),WIDTH*scaling-100,HEIGHT*scaling-20);
+    }
+
+    //TODO: Refactor high score.
+    private void setHighScore(){
+        if(gameManager.isGameOver()){
+            if(gameManager.getScore() > highScore){
+                highScore = gameManager.getScore();
             }
         }
     }
