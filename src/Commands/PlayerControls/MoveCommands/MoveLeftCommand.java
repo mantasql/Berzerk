@@ -1,17 +1,17 @@
-package Commands.PlayerControlls.MoveCommands;
+package Commands.PlayerControls.MoveCommands;
 
 import Commands.Command;
 import Controllers.PlayerController;
 
-public class MoveUpCommand implements Command {
+public class MoveLeftCommand implements Command {
     private PlayerController playerController;
 
-    public MoveUpCommand(PlayerController playerController) {
+    public MoveLeftCommand(PlayerController playerController) {
         this.playerController = playerController;
     }
 
     @Override
     public void execute() {
-        playerController.moveUp();
+        playerController.moveLeft();
     }
 }

@@ -1,4 +1,4 @@
-package Commands.PlayerControlls;
+package Commands.PlayerControls;
 
 import Commands.Command;
 

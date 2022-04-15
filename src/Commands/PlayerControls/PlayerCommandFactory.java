@@ -1,14 +1,14 @@
-package Commands.PlayerControlls;
+package Commands.PlayerControls;
 
 import Commands.Command;
-import Commands.PlayerControlls.MoveCommands.MoveDownCommand;
-import Commands.PlayerControlls.MoveCommands.MoveLeftCommand;
-import Commands.PlayerControlls.MoveCommands.MoveRightCommand;
-import Commands.PlayerControlls.MoveCommands.MoveUpCommand;
-import Commands.PlayerControlls.ShootCommands.ShootDownCommand;
-import Commands.PlayerControlls.ShootCommands.ShootLeftCommand;
-import Commands.PlayerControlls.ShootCommands.ShootRightCommand;
-import Commands.PlayerControlls.ShootCommands.ShootUpCommand;
+import Commands.PlayerControls.MoveCommands.MoveDownCommand;
+import Commands.PlayerControls.MoveCommands.MoveLeftCommand;
+import Commands.PlayerControls.MoveCommands.MoveRightCommand;
+import Commands.PlayerControls.MoveCommands.MoveUpCommand;
+import Commands.PlayerControls.ShootCommands.ShootDownCommand;
+import Commands.PlayerControls.ShootCommands.ShootLeftCommand;
+import Commands.PlayerControls.ShootCommands.ShootRightCommand;
+import Commands.PlayerControls.ShootCommands.ShootUpCommand;
 import Controllers.PlayerController;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;

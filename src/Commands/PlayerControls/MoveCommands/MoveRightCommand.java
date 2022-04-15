@@ -1,17 +1,17 @@
-package Commands.PlayerControlls.ShootCommands;
+package Commands.PlayerControls.MoveCommands;
 
 import Commands.Command;
 import Controllers.PlayerController;
 
-public class ShootDownCommand implements Command {
+public class MoveRightCommand implements Command {
     private PlayerController playerController;
 
-    public ShootDownCommand(PlayerController playerController) {
+    public MoveRightCommand(PlayerController playerController) {
         this.playerController = playerController;
     }
 
     @Override
     public void execute() {
-        playerController.shootDown();
+        playerController.moveRight();
     }
 }

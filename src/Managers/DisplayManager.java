@@ -137,8 +137,8 @@ public class DisplayManager extends Application {
         graphicsContext.setStroke(Color.WHITE);
         graphicsContext.setTextAlign(TextAlignment.CENTER);
         graphicsContext.setTextBaseline(VPos.CENTER);
-        graphicsContext.strokeText(String.valueOf(gameManager.getScore()),WIDTH*scaling/4-100,HEIGHT*scaling-20);
-        graphicsContext.strokeText("High score: " + String.valueOf(highScore),WIDTH*scaling-100,HEIGHT*scaling-20);
+        graphicsContext.strokeText(String.valueOf(gameManager.getScore()),WIDTH*scaling/4-33*scaling,HEIGHT*scaling-6*scaling);
+        graphicsContext.strokeText("High score: " + String.valueOf(highScore),WIDTH*scaling-33*scaling,HEIGHT*scaling-6*scaling);
     }
 
     //TODO: Refactor high score.

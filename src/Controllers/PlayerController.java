@@ -1,6 +1,6 @@
 package Controllers;
 
-import Commands.PlayerControlls.PlayerCommandFactory;
+import Commands.PlayerControls.PlayerCommandFactory;
 import GameObjects.Bullet;
 import GameObjects.Player;
 import com.sq.Direction;
